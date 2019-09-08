@@ -1,12 +1,19 @@
 const denon = require('denon-avr')
 const InputEvent = require('input-event')
 
-const avr = new denon(new denon.transports.telnet({ host:  process.env.DENON_HOST, debug: false }))
+const config = {
+  denonHost: process.env.BEO_DENON_HOST,
+  inputDevice: process.env.BEO_INPUT_DEVICE
+}
+
+console.log(`Starting beo-volume-control with config: ${JSON.stringify(config)}`)
+
+const avr = new denon(new denon.transports.telnet({ host: config.denonHost, debug: false }))
 
 avr.connect()
 avr.on('connect', function() {
 
-  const input = new InputEvent('/dev/input/event1')
+  const input = new InputEvent(config.inputDevice)
 
   const keyboard = new InputEvent.Keyboard(input);
   keyboard.on('keypress', event => {
